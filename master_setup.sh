@@ -2,7 +2,7 @@
 
 # Swarm setup
 
-sudo docker swarm init --advertise-addr 192.168.50.2:2377 | sed 5!d > /vagrant/token/join.sh
+sudo docker swarm init --advertise-addr 192.168.50.2:2377 | sed '5!d'> /vagrant/token/join.sh
 sudo docker network create -d overlay --subnet 10.0.10.0/24 ClusterNet
 sudo docker volume create shared_files
 
