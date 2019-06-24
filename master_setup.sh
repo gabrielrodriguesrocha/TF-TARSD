@@ -35,3 +35,5 @@ cd ../container_metrics
 sudo docker volume create influxdb_containers
 sudo docker service create -d --name container_persistence_service -p 8087:8086 --mount source=influxdb_containers,target=/var/lib/influxdb --network ClusterNet influxdb
 curl -X POST -G http://localhost:8087/query --data-urlencode "q=CREATE DATABASE prometheus"
+
+sudo docker run -d --name=grafana --restart=always -p 3000:3000 grafana/grafana
