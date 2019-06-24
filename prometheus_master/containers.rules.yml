@@ -1,0 +1,20 @@
+groups:
+  - name: cpu_usage_per_container
+    rules:
+    - record: job_container:cpu_usage_per_container:avg_rate5m
+      expr: container_cpu_load_average_10s{name=~".+"}
+
+  - name: memory_usage_per_container
+    rules:
+    - record: job_container:memory_usage_per_container
+      expr: container_memory_usage_bytes{name=~".+"}
+
+  - name: network_rx_per_container
+    rules:
+    - record: job_container:network_rx_per_container:sum_rate5m
+      expr: sum by(id, name) (rate(container_network_receive_bytes_total{name=~".+"}[5m]))
+
+  - name: network_tx_per_container
+    rules:
+    - record: job_container:network_tx_per_container:sum_rate5m
+      expr: sum by(id, name) (rate(container_network_transmit_bytes_total{name=~".+"}[5m]))

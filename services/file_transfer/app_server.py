@@ -2,11 +2,6 @@ import json
 from bottle import request, route, run, static_file
 import sys
 
-#Carrega o banco
-db = TinyDB('db.json', sort_keys=True, indent=4, separators=(',', ': '))
-#Define a tabela
-service_table = db.table('service')
-
 @route('/upload', method='POST')
 def service_post():
 	#Carrega do body da requisição o arquivo json recebido

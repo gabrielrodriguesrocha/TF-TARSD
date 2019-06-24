@@ -15,17 +15,23 @@ sudo docker run -p 9090:9090 --restart=always --detach=true --name=prometheus my
 sudo docker run -d --restart=always --net="host" --pid="host" --publish=9100:9100 --detach=true --name=node-exporter -v "/:/host:ro,rslave" quay.io/prometheus/node-exporter --path.rootfs /host
 sudo docker run --restart=always --volume=/:/rootfs:ro --volume=/var/run:/var/run:ro --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --volume=/dev/disk/:/dev/disk:ro --publish=8080:8080 --detach=true --name=cadvisor google/cadvisor:latest
 
+# File transfer service
+
 cd ../services/file_transfer
 
 sudo docker build -t file_transfer .
 sudo docker service create -d --name file_transfer_service --mount source=shared_files,target=/usr/src/app --network ClusterNet --replicas 3 -p 5001:80 file_transfer
 
-cd ../container_metrics
-
-sudo docker build -t container_metrics .
-sudo docker service create -d --name container_metrics_service --network ClusterNet container_metrics
+# VM metrics persistence
 
 cd ../vm_metrics
+sudo docker volume create influxdb_vms
+sudo docker service create -d --name vm_persistence_service -p 8086:8086 --mount source=influxdb_vms,target=/var/lib/influxdb --network ClusterNet influxdb
+curl -X POST -G http://localhost:8086/query --data-urlencode "q=CREATE DATABASE prometheus"
 
-sudo docker build -t vm_metrics.
-sudo docker service create -d --name vm_metrics_service --network ClusterNet vm_metrics
+# Container metrics persistence
+
+cd ../container_metrics
+sudo docker volume create influxdb_containers
+sudo docker service create -d --name container_persistence_service -p 8087:8086 --mount source=influxdb_containers,target=/var/lib/influxdb --network ClusterNet influxdb
+curl -X POST -G http://localhost:8087/query --data-urlencode "q=CREATE DATABASE prometheus"

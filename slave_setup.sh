@@ -7,7 +7,7 @@ bash /vagrant/token/join.sh
 
 # Prometheus setup
 
-cd TF-TARSD/prometheus_master
+cd TF-TARSD/prometheus_slave
 
 sudo docker build -t my-prometheus .
 sudo docker run -p 9090:9090 --restart=always --detach=true --name=prometheus my-prometheus
