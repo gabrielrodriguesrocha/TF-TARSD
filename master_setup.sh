@@ -27,13 +27,13 @@ sudo docker service create -d --name file_transfer_service --mount source=shared
 cd ../vm_metrics
 sudo docker volume create influxdb_vms
 sudo docker service create -d --name vm_persistence_service -p 8086:8086 --mount source=influxdb_vms,target=/var/lib/influxdb --network ClusterNet influxdb
-curl -X POST -G http://localhost:8086/query --data-urlencode "q=CREATE DATABASE prometheus"
+sleep 60; curl -X POST -G http://localhost:8086/query --data-urlencode "q=CREATE DATABASE prometheus"
 
 # Container metrics persistence
 
 cd ../container_metrics
 sudo docker volume create influxdb_containers
 sudo docker service create -d --name container_persistence_service -p 8087:8086 --mount source=influxdb_containers,target=/var/lib/influxdb --network ClusterNet influxdb
-curl -X POST -G http://localhost:8087/query --data-urlencode "q=CREATE DATABASE prometheus"
+sleep 60; curl -X POST -G http://localhost:8087/query --data-urlencode "q=CREATE DATABASE prometheus"
 
 sudo docker run -d --name=grafana --restart=always -p 3000:3000 grafana/grafana
