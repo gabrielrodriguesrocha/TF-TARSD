@@ -5,17 +5,16 @@ import sys
 @route('/upload', method='POST')
 def service_post():
 	#Carrega do body da requisição o arquivo json recebido
-	filename = request.forms.get('name')
-	file_content = request.files.get('file')
+	file_recv = request.files.get('file')
+	filename = file_recv.filename
 	#Printa o arquivo recebido
 	print('File Received:')
 	print(filename)
-	
-	f = open(filename, "w")
-	f.write(file_content)
-	f.close()
 
-@route('/download')
+	file_recv.save("/usr/src/app", overwrite=True)
+	
+
+@route('/download', method='POST')
 def service_get():
 	filename = request.forms.get('name')
 	return static_file(filename, root='/usr/src/app')
