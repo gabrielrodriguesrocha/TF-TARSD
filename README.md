@@ -12,6 +12,18 @@ Pré Requisitos:
 vagrant up
 ```
 
+Para enviar arquivos ao serviço de transferência de arquivos:
+
+```
+curl -X POST -F 'file=@<filename>' 192.168.50.2:5001/upload
+```
+
+Para receber arquivos do serviço de transferência de arquivos:
+
+```
+curl -X POST -F 'name=<filename>' 192.168.50.2:5001/download > <filename>
+```
+
 [//]: # (Completar!!!)
 
 ## Diagrama do ambiente
